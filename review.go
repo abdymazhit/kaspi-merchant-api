@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"kaspi-merchant/vo"
 	"net/url"
 	"strconv"
 	"time"
@@ -20,9 +19,9 @@ type GetReviewsRequest struct {
 	PageSize   int
 	Filter     struct {
 		MerchantReviews struct {
-			ApprovedDateGe time.Duration
-			ApprovedDateLe time.Duration
-			Quality        vo.ReviewQuality
+			ApprovedDateGe time.Time
+			ApprovedDateLe time.Time
+			Quality        ReviewQuality
 		}
 	}
 }
@@ -37,10 +36,10 @@ func (r *GetReviewsRequest) ToUrlValues() (url.Values, error) {
 	if r.PageSize > 100 {
 		return nil, ErrPageSizeLimit
 	}
-	if r.Filter.MerchantReviews.ApprovedDateGe <= 0 {
+	if r.Filter.MerchantReviews.ApprovedDateGe.Unix() <= 0 {
 		return nil, ErrApprovedDateGe
 	}
-	if r.Filter.MerchantReviews.ApprovedDateLe <= 0 {
+	if r.Filter.MerchantReviews.ApprovedDateLe.Unix() <= 0 {
 		return nil, ErrApprovedDateLe
 	}
 
@@ -50,18 +49,18 @@ func (r *GetReviewsRequest) ToUrlValues() (url.Values, error) {
 	if r.Filter.MerchantReviews.Quality != "" {
 		params.Add("filter[merchantreviews][quality]", string(r.Filter.MerchantReviews.Quality))
 	}
-	params.Add("filter[merchantreviews][approvedDate][$ge]", strconv.FormatInt(int64(r.Filter.MerchantReviews.ApprovedDateGe), 10))
-	params.Add("filter[merchantreviews][approvedDate][$le]", strconv.FormatInt(int64(r.Filter.MerchantReviews.ApprovedDateLe), 10))
+	params.Add("filter[merchantreviews][approvedDate][$ge]", strconv.FormatInt(r.Filter.MerchantReviews.ApprovedDateGe.Unix(), 10))
+	params.Add("filter[merchantreviews][approvedDate][$le]", strconv.FormatInt(r.Filter.MerchantReviews.ApprovedDateLe.Unix(), 10))
 	return params, nil
 }
 
 type ReviewsResponse struct {
 	Data struct {
-		Id            string              `json:"id"`
-		Type          string              `json:"type"`
-		Attributes    vo.ReviewAttributes `json:"attributes"`
+		Id            string           `json:"id"`
+		Type          string           `json:"type"`
+		Attributes    ReviewAttributes `json:"attributes"`
 		Relationships struct {
-			Order vo.Relationship `json:"order"`
+			Order Relationship `json:"order"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`
@@ -85,11 +84,11 @@ func (a *api) GetReviews(ctx context.Context, req GetReviewsRequest) (*ReviewsRe
 
 type ReviewResponse struct {
 	Data struct {
-		Id            string              `json:"id"`
-		Type          string              `json:"type"`
-		Attributes    vo.ReviewAttributes `json:"attributes"`
+		Id            string           `json:"id"`
+		Type          string           `json:"type"`
+		Attributes    ReviewAttributes `json:"attributes"`
 		Relationships struct {
-			Order vo.Relationship `json:"order"`
+			Order Relationship `json:"order"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`
@@ -105,3 +104,14 @@ func (a *api) GetReviewByOrderId(ctx context.Context, orderId string) (*ReviewRe
 	}
 	return &response, nil
 }
+
+// --------------------------------------------------
+// VO
+// --------------------------------------------------
+
+type ReviewQuality string
+
+const (
+	ReviewQualityPositive ReviewQuality = "POSITIVE"
+	ReviewQualityNegative ReviewQuality = "NEGATIVE"
+)

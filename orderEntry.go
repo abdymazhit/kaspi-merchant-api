@@ -3,17 +3,16 @@ package kaspi_merchant
 import (
 	"context"
 	"fmt"
-	"kaspi-merchant/vo"
 )
 
 type OrderEntriesResponse struct {
 	Data []struct {
-		Id            string                  `json:"id"`
-		Type          string                  `json:"type"`
-		Attributes    vo.OrderEntryAttributes `json:"attributes"`
+		Id            string               `json:"id"`
+		Type          string               `json:"type"`
+		Attributes    OrderEntryAttributes `json:"attributes"`
 		Relationships struct {
-			Product                vo.Relationship `json:"product"`
-			DeliveryPointOfService vo.Relationship `json:"deliveryPointOfService"`
+			Product                Relationship `json:"product"`
+			DeliveryPointOfService Relationship `json:"deliveryPointOfService"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`
@@ -32,12 +31,12 @@ func (a *api) GetOrderEntries(ctx context.Context, orderId string) (*OrderEntrie
 
 type OrderEntryResponse struct {
 	Data struct {
-		Id            string                  `json:"id"`
-		Type          string                  `json:"type"`
-		Attributes    vo.OrderEntryAttributes `json:"attributes"`
+		Id            string               `json:"id"`
+		Type          string               `json:"type"`
+		Attributes    OrderEntryAttributes `json:"attributes"`
 		Relationships struct {
-			Product                vo.Relationship `json:"product"`
-			DeliveryPointOfService vo.Relationship `json:"deliveryPointOfService"`
+			Product                Relationship `json:"product"`
+			DeliveryPointOfService Relationship `json:"deliveryPointOfService"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`

@@ -3,14 +3,13 @@ package kaspi_merchant
 import (
 	"context"
 	"fmt"
-	"kaspi-merchant/vo"
 )
 
 type CitiesResponse struct {
 	Data []struct {
-		Id            string            `json:"id"`
-		Type          string            `json:"type"`
-		Attributes    vo.CityAttributes `json:"attributes"`
+		Id            string         `json:"id"`
+		Type          string         `json:"type"`
+		Attributes    CityAttributes `json:"attributes"`
 		Relationships struct {
 		} `json:"relationships"`
 		Links struct {
@@ -30,9 +29,9 @@ func (a *api) GetCities(ctx context.Context) (*CitiesResponse, error) {
 
 type CityResponse struct {
 	Data struct {
-		Id            string            `json:"id"`
-		Type          string            `json:"type"`
-		Attributes    vo.CityAttributes `json:"attributes"`
+		Id            string         `json:"id"`
+		Type          string         `json:"type"`
+		Attributes    CityAttributes `json:"attributes"`
 		Relationships struct {
 		} `json:"relationships"`
 		Links struct {

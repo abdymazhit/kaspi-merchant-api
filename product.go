@@ -3,16 +3,15 @@ package kaspi_merchant
 import (
 	"context"
 	"fmt"
-	"kaspi-merchant/vo"
 )
 
 type ProductResponse struct {
 	Data struct {
-		Id            string               `json:"id"`
-		Type          string               `json:"type"`
-		Attributes    vo.ProductAttributes `json:"attributes"`
+		Id            string            `json:"id"`
+		Type          string            `json:"type"`
+		Attributes    ProductAttributes `json:"attributes"`
 		Relationships struct {
-			MerchantProduct vo.Relationship `json:"merchantProduct"`
+			MerchantProduct Relationship `json:"merchantProduct"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`

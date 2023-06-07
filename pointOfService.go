@@ -3,16 +3,15 @@ package kaspi_merchant
 import (
 	"context"
 	"fmt"
-	"kaspi-merchant/vo"
 )
 
 type PointOfServiceResponse struct {
 	Data struct {
-		Id            string                      `json:"id"`
-		Type          string                      `json:"type"`
-		Attributes    vo.PointOfServiceAttributes `json:"attributes"`
+		Id            string                   `json:"id"`
+		Type          string                   `json:"type"`
+		Attributes    PointOfServiceAttributes `json:"attributes"`
 		Relationships struct {
-			City vo.Relationship `json:"city"`
+			City Relationship `json:"city"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`

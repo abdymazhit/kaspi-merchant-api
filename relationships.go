@@ -1,4 +1,8 @@
-package vo
+package kaspi_merchant
+
+// --------------------------------------------------
+// VO
+// --------------------------------------------------
 
 type EntriesRelationship struct {
 	Links struct {

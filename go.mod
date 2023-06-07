@@ -1,3 +1,3 @@
-module kaspi-merchant
+module github.com/abdymazhit/kaspi-merchant-api
 
-go 1.20
+go 1.16

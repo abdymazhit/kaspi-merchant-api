@@ -1,4 +1,8 @@
-package vo
+package kaspi_merchant
+
+// --------------------------------------------------
+// VO
+// --------------------------------------------------
 
 type CityAttributes struct {
 	Code   string `json:"code"`

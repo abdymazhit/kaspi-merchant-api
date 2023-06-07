@@ -46,9 +46,7 @@ type api struct {
 }
 
 func New(authToken string) API {
-	return &api{
-		authToken: authToken,
-	}
+	return &api{authToken: authToken}
 }
 
 func (a *api) do(ctx context.Context, method method, path string, params url.Values, result interface{}) error {
