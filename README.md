@@ -27,11 +27,27 @@ func main() {
 	orders, err := api.GetOrders(context.Background(), kma.GetOrdersRequest{
 		PageNumber: 0,
 		PageSize:   10,
-		Filter: {
-			Orders: {
-				CreationDateGe: time.Now().AddDate(0, 0, -1),
-				CreationDateLe: time.Now(),
-				State:          kma.OrdersStateNew,
+		Filter: struct {
+			Orders struct {
+				CreationDateGe    time.Time
+				CreationDateLe    time.Time
+				State             kma.OrdersState
+				Status            kma.OrdersStatus
+				DeliveryType      kma.OrdersDeliveryType
+				SignatureRequired bool
+			}
+		}{
+			Orders: struct {
+				CreationDateGe    time.Time
+				CreationDateLe    time.Time
+				State             kma.OrdersState
+				Status            kma.OrdersStatus
+				DeliveryType      kma.OrdersDeliveryType
+				SignatureRequired bool
+			}{
+				CreationDateGe:    time.Now().AddDate(0, 0, -1),
+				CreationDateLe:    time.Now(),
+				State:             kma.OrdersStateNew,
 			},
 		},
 	})
