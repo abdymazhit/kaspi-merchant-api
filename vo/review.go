@@ -1,8 +1,8 @@
-package valueobject
+package vo
 
 type ReviewQuality string
 
 const (
 	ReviewQualityPositive ReviewQuality = "POSITIVE"
-	ReviewQualityNegative               = "NEGATIVE"
+	ReviewQualityNegative ReviewQuality = "NEGATIVE"
 )

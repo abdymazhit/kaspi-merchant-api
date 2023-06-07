@@ -1,4 +1,4 @@
-package valueobject
+package vo
 
 type CityAttributes struct {
 	Code   string `json:"code"`

@@ -1,4 +1,4 @@
-package valueobject
+package vo
 
 type EntriesRelationship struct {
 	Links struct {

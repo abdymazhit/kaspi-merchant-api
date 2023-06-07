@@ -1,9 +1,9 @@
-package wapi
+package kaspi_merchant
 
 import (
 	"context"
 	"errors"
-	"kaspi-merchant/pkg/wapi/valueobject"
+	"kaspi-merchant/vo"
 	"net/url"
 	"strconv"
 	"time"
@@ -27,9 +27,9 @@ type GetOrdersRequest struct {
 		Orders struct {
 			CreationDateGe    time.Duration
 			CreationDateLe    time.Duration
-			State             valueobject.OrdersState
-			Status            valueobject.OrdersStatus
-			DeliveryType      valueobject.OrdersDeliveryType
+			State             vo.OrdersState
+			Status            vo.OrdersStatus
+			DeliveryType      vo.OrdersDeliveryType
 			SignatureRequired bool
 		}
 	}
@@ -54,13 +54,13 @@ func (p *GetOrdersRequest) ToUrlValues() (url.Values, error) {
 	if p.Filter.Orders.State == "" {
 		return nil, ErrFilterOrdersState
 	}
-	if p.Filter.Orders.State == valueobject.OrdersStatePickup && p.Filter.Orders.DeliveryType == valueobject.OrdersDeliveryTypePickup {
+	if p.Filter.Orders.State == vo.OrdersStatePickup && p.Filter.Orders.DeliveryType == vo.OrdersDeliveryTypePickup {
 		return nil, ErrFilterOrdersStatePickupDeliveryTypePickup
 	}
-	if p.Filter.Orders.State == valueobject.OrdersStateDelivery && p.Filter.Orders.DeliveryType == valueobject.OrdersDeliveryTypeDelivery {
+	if p.Filter.Orders.State == vo.OrdersStateDelivery && p.Filter.Orders.DeliveryType == vo.OrdersDeliveryTypeDelivery {
 		return nil, ErrFilterOrdersStateDeliveryDeliveryTypeDelivery
 	}
-	if p.Filter.Orders.SignatureRequired && p.Filter.Orders.State != valueobject.OrdersStateSignRequired {
+	if p.Filter.Orders.SignatureRequired && p.Filter.Orders.State != vo.OrdersStateSignRequired {
 		return nil, ErrFilterOrdersStateSignRequired
 	}
 
@@ -89,12 +89,12 @@ func (p *GetOrdersRequest) ToUrlValues() (url.Values, error) {
 
 type OrdersResponse struct {
 	Data []struct {
-		Id            string                      `json:"id"`
-		Type          string                      `json:"type"`
-		Attributes    valueobject.OrderAttributes `json:"attributes"`
+		Id            string             `json:"id"`
+		Type          string             `json:"type"`
+		Attributes    vo.OrderAttributes `json:"attributes"`
 		Relationships struct {
-			Entries valueobject.EntriesRelationship `json:"entries"`
-			User    valueobject.Relationship        `json:"user"`
+			Entries vo.EntriesRelationship `json:"entries"`
+			User    vo.Relationship        `json:"user"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`
@@ -120,22 +120,27 @@ type OrdersResponse struct {
 	} `json:"meta"`
 }
 
-func (w *wApi) GetOrders(ctx context.Context, authToken string, req GetOrdersRequest) (string, error) {
+func (a *api) GetOrders(ctx context.Context, req GetOrdersRequest) (*OrdersResponse, error) {
 	reqParams, err := req.ToUrlValues()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return w.do(ctx, "GET", "orders", authToken, reqParams)
+
+	var response OrdersResponse
+	if err = a.do(ctx, GET, "orders", reqParams, &response); err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
 
 type OrderByCodeResponse struct {
 	Data []struct {
-		Id            string                      `json:"id"`
-		Type          string                      `json:"type"`
-		Attributes    valueobject.OrderAttributes `json:"attributes"`
+		Id            string             `json:"id"`
+		Type          string             `json:"type"`
+		Attributes    vo.OrderAttributes `json:"attributes"`
 		Relationships struct {
-			Entries valueobject.EntriesRelationship `json:"entries"`
-			User    valueobject.Relationship        `json:"user"`
+			Entries vo.EntriesRelationship `json:"entries"`
+			User    vo.Relationship        `json:"user"`
 		} `json:"relationships"`
 		Links struct {
 			Self string `json:"self"`
@@ -148,8 +153,10 @@ type OrderByCodeResponse struct {
 	} `json:"meta"`
 }
 
-func (w *wApi) GetOrderByCode(ctx context.Context, authToken, code string) (string, error) {
-	return w.do(ctx, "GET", "orders", authToken, url.Values{
-		"filter[orders][code]": []string{code},
-	})
+func (a *api) GetOrderByCode(ctx context.Context, code string) (*OrderByCodeResponse, error) {
+	var response OrderByCodeResponse
+	if err := a.do(ctx, GET, "orders", url.Values{"filter[orders][code]": []string{code}}, &response); err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
